@@ -7,12 +7,6 @@ const session = require('koa-session');
 const passport = require('./controllers/auth');
 const routes = require('./routes/routes');
 const app = koa();
-const passport = require('koa-passport');
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;;
-const tokens = require('./config');
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.keys = ['secret'];
 app.use(session(app));
@@ -22,7 +16,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 routes(app);
 
-
+// Serve up react SPA
+app.use(spa(path.join(__dirname, '../dist'), {
+  index: 'index.html',
+  404: '404.html',
+  routeBase: '/',
+}));
 
 app.listen(3000);
 console.log('server running on port 3000');
